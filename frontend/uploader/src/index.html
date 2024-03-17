@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiple File Upload</title>
+  </head>
+  <body>
+    <h2>Multiple File Upload</h2>
+    <input type="file" id="fileInput" multiple />
+    <button onclick="uploadFiles()">Upload</button>
+    <div id="status"></div>
+
+    <script>
+      function uploadFiles() {
+        const fileInput = document.getElementById("fileInput");
+        const files = fileInput.files;
+
+        if (files.length === 0) {
+          document.getElementById("status").innerHTML = "No files selected.";
+          return;
+        }
+
+        const formData = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+          formData.append("files", files[i]);
+        }
+
+        fetch("http://localhost:5000/upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.text())
+          .then((result) => {
+            document.getElementById("status").innerHTML = result;
+          })
+          .catch((error) => {
+            console.error("Error uploading files:", error);
+            document.getElementById("status").innerHTML =
+              "Error uploading files.";
+          });
+      }
+    </script>
+  </body>
+</html>
